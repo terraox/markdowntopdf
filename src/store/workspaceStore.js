@@ -39,6 +39,7 @@ export const useWorkspaceStore = create((set, get) => ({
 
   // ── Layout state ─────────────────────────────────────────────
   sidebarOpen: true,
+  syncScroll: false,
 
   // ── Export state ─────────────────────────────────────────────
   isExporting: false,
@@ -107,6 +108,7 @@ export const useWorkspaceStore = create((set, get) => ({
 
   setSidebarOpen: (open) => set({ sidebarOpen: open }),
   setIsExporting: (val) => set({ isExporting: val }),
+  toggleSyncScroll: () => set((state) => ({ syncScroll: !state.syncScroll })),
 
   newFile: () => {
     const { files, openTabs } = get();

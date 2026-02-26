@@ -1,4 +1,4 @@
-import { renderMarkdown } from './markdownRenderer'
+import { renderMarkdown } from "./markdownRenderer";
 
 const PDF_STYLES = `
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 800px; margin: 40px auto; padding: 0 40px; line-height: 1.7; color: #111; }
@@ -15,32 +15,32 @@ const PDF_STYLES = `
   hr { border: none; border-top: 1px solid #e5e7eb; }
   ul, ol { padding-left: 1.5em; }
   a { color: #111; }
-`
+`;
 
 export function buildPdfHtml(markdownContent) {
-  const body = renderMarkdown(markdownContent)
-  return `<!DOCTYPE html><html><head><meta charset="utf-8"><style>${PDF_STYLES}</style></head><body>${body}</body></html>`
+  const body = renderMarkdown(markdownContent);
+  return `<!DOCTYPE html><html><head><meta charset="utf-8"><style>${PDF_STYLES}</style></head><body>${body}</body></html>`;
 }
 
 export async function generatePdfBlob(html) {
-  const res = await fetch('http://localhost:3001/api/generate-pdf', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+  const res = await fetch("http://localhost:3001/api/generate-pdf", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ html }),
-  })
-  if (!res.ok) throw new Error(`Server error: ${res.status}`)
-  return res.blob()
+  });
+  if (!res.ok) throw new Error(`Server error: ${res.status}`);
+  return res.blob();
 }
 
 export function downloadBlob(blob, filename) {
-  const url = URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  a.href = url
-  a.download = filename
-  a.click()
-  URL.revokeObjectURL(url)
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
 export function mdNameToPdf(filename) {
-  return filename.replace(/\.mdx?$/, '') + '.pdf'
+  return filename.replace(/\.mdx?$/, "") + ".pdf";
 }

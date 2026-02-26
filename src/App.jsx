@@ -1,5 +1,5 @@
 import './App.css'
-import { useRef } from 'react'
+import { useRef, useEffect } from 'react'
 import { AnimatedThemeToggler } from './components/AnimatedThemeToggler'
 import {
   SidebarProvider,
@@ -40,6 +40,34 @@ function App() {
     e.target.value = ''
   }
 
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0
+      const metaKey = isMac ? e.metaKey : e.ctrlKey
+
+      // Cmd/Ctrl + N -> New File
+      if (metaKey && e.key === 'n' && !e.shiftKey) {
+        e.preventDefault()
+        newFile()
+      }
+      // Cmd/Ctrl + O -> Open File
+      else if (metaKey && e.key === 'o' && !e.shiftKey) {
+        e.preventDefault()
+        handleOpenFile()
+      }
+      // Cmd/Ctrl + Shift + O -> Open Folder (placeholder for future)
+      else if (metaKey && e.shiftKey && e.key === 'O') {
+        e.preventDefault()
+        // TODO: Implement open folder functionality
+        console.log('Open Folder shortcut - feature not yet implemented')
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [newFile])
+
   return (
     <SidebarProvider>
       <div className="app-shell">
@@ -77,19 +105,19 @@ function App() {
                 <SidebarGroupContent>
                   <SidebarMenu>
                     <SidebarMenuItem>
-                      <SidebarMenuButton tooltip="New File" onClick={newFile}>
+                      <SidebarMenuButton tooltip="New File (⌘N)" onClick={newFile}>
                         <FilePlus size={15} />
                         <span>New File</span>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
                     <SidebarMenuItem>
-                      <SidebarMenuButton tooltip="Open File" onClick={handleOpenFile}>
+                      <SidebarMenuButton tooltip="Open File (⌘O)" onClick={handleOpenFile}>
                         <FileText size={15} />
                         <span>Open File</span>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
                     <SidebarMenuItem>
-                      <SidebarMenuButton tooltip="Open Folder" disabled>
+                      <SidebarMenuButton tooltip="Open Folder (⌘⇧O)" disabled>
                         <FolderOpen size={15} />
                         <span>Open Folder</span>
                       </SidebarMenuButton>

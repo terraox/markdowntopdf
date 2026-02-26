@@ -74,7 +74,9 @@ export function EditorPanel() {
   const viewRef = useRef(null)
   const content = useWorkspaceStore((s) => s.getActiveContent())
   const setContent = useWorkspaceStore((s) => s.setContent)
+  const syncScroll = useWorkspaceStore((s) => s.syncScroll)
   const isDarkRef = useRef(document.documentElement.classList.contains('dark'))
+  const isScrollingRef = useRef(false)
 
   // Create / recreate editor when theme changes
   useEffect(() => {
@@ -136,6 +138,57 @@ export function EditorPanel() {
       })
     }
   }, [content])
+
+  // Sync scroll between editor and preview
+  useEffect(() => {
+    if (!syncScroll) return
+
+    const handleScroll = () => {
+      const view = viewRef.current
+      if (!view || isScrollingRef.current) return
+      
+      isScrollingRef.current = true
+      const scroller = view.scrollDOM
+      const scrollPercent = scroller.scrollTop / (scroller.scrollHeight - scroller.clientHeight)
+      
+      window.dispatchEvent(new CustomEvent('editor-scroll', { 
+        detail: { scrollPercent } 
+      }))
+
+      setTimeout(() => {
+        isScrollingRef.current = false
+      }, 50)
+    }
+
+    const view = viewRef.current
+    if (view) {
+      const scroller = view.scrollDOM
+      scroller.addEventListener('scroll', handleScroll)
+      return () => scroller.removeEventListener('scroll', handleScroll)
+    }
+  }, [syncScroll])
+
+  useEffect(() => {
+    if (!syncScroll) return
+
+    const handlePreviewScroll = (e) => {
+      const view = viewRef.current
+      if (!view || isScrollingRef.current) return
+      
+      isScrollingRef.current = true
+      const { scrollPercent } = e.detail
+      const scroller = view.scrollDOM
+      const maxScroll = scroller.scrollHeight - scroller.clientHeight
+      scroller.scrollTop = scrollPercent * maxScroll
+
+      setTimeout(() => {
+        isScrollingRef.current = false
+      }, 50)
+    }
+
+    window.addEventListener('preview-scroll', handlePreviewScroll)
+    return () => window.removeEventListener('preview-scroll', handlePreviewScroll)
+  }, [syncScroll])
 
   return (
     <div className="editor-panel">
