@@ -1,25 +1,27 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <defs>
-    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#3b82f6"/>
-      <stop offset="100%" style="stop-color:#8b5cf6"/>
-    </linearGradient>
-  </defs>
+    <defs>
+        <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#3b82f6" />
+            <stop offset="100%" style="stop-color:#8b5cf6" />
+        </linearGradient>
+    </defs>
 
-  <!-- Document shape -->
-  <path d="M22 10 L62 10 L78 26 L78 90 L22 90 Z" fill="none" stroke="#d1d5db" stroke-width="2.5" stroke-linejoin="round"/>
-  <!-- Folded corner -->
-  <path d="M62 10 L62 26 L78 26" fill="none" stroke="#d1d5db" stroke-width="2.5" stroke-linejoin="round"/>
+    <!-- Document shape -->
+    <path d="M22 10 L62 10 L78 26 L78 90 L22 90 Z" fill="none" stroke="#d1d5db" stroke-width="2.5"
+        stroke-linejoin="round" />
+    <!-- Folded corner -->
+    <path d="M62 10 L62 26 L78 26" fill="none" stroke="#d1d5db" stroke-width="2.5" stroke-linejoin="round" />
 
-  <!-- Hash symbol inside — representing Markdown -->
-  <g stroke="url(#g)" stroke-width="2" stroke-linecap="round" opacity="0.85">
-    <line x1="42" y1="38" x2="39" y2="56"/>
-    <line x1="51" y1="38" x2="48" y2="56"/>
-    <line x1="37" y1="44" x2="53" y2="44"/>
-    <line x1="36" y1="50" x2="52" y2="50"/>
-  </g>
+    <!-- Hash symbol inside — representing Markdown -->
+    <g stroke="url(#g)" stroke-width="2" stroke-linecap="round" opacity="0.85">
+        <line x1="42" y1="38" x2="39" y2="56" />
+        <line x1="51" y1="38" x2="48" y2="56" />
+        <line x1="37" y1="44" x2="53" y2="44" />
+        <line x1="36" y1="50" x2="52" y2="50" />
+    </g>
 
-  <!-- Small arrow curving down toward bottom-right corner — transformation -->
-  <path d="M54 68 Q66 68 66 78" fill="none" stroke="#6b7280" stroke-width="1.8" stroke-linecap="round"/>
-  <polyline points="62,75 66,79 70,75" fill="none" stroke="#6b7280" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- Small arrow curving down toward bottom-right corner — transformation -->
+    <path d="M54 68 Q66 68 66 78" fill="none" stroke="#6b7280" stroke-width="1.8" stroke-linecap="round" />
+    <polyline points="62,75 66,79 70,75" fill="none" stroke="#6b7280" stroke-width="1.8" stroke-linecap="round"
+        stroke-linejoin="round" />
 </svg>
