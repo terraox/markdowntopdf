@@ -76,8 +76,8 @@ Respond with a clear plan plus concrete changes.
 ## Repository & Runtime Expectations
 
 - **Assume**:
-  - Frontend served by Vite dev server (default `http://localhost:5173`).
-  - Backend PDF service at `http://localhost:5000` (`server/server.js`).
+  - Frontend served by Vite dev server (default `http://localhost:6000`).
+  - Backend PDF service at `http://localhost:6001` (`server/server.js`).
 - **Key commands** (do not change these without explicit user approval):
   - `npm install` – install frontend deps
   - `npm run dev` – start Vite

@@ -3,12 +3,12 @@ const cors = require("cors");
 const generatePdfRouter = require("./routes/generatePdf");
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 6001;
 
 // ── Middleware ──────────────────────────────────────────────────
 app.use(
   cors({
-    origin: ["http://localhost:5173", "http://127.0.0.1:5173"],
+    origin: ["http://localhost:6000", "http://127.0.0.1:6000"],
     methods: ["GET", "POST"],
   }),
 );

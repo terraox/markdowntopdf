@@ -23,7 +23,7 @@ export function buildPdfHtml(markdownContent) {
 }
 
 export async function generatePdfBlob(html) {
-  const res = await fetch("http://localhost:3001/api/generate-pdf", {
+  const res = await fetch("http://localhost:6001/api/generate-pdf", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ html }),
