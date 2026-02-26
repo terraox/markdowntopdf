@@ -78,8 +78,8 @@
 
 /* ─── Theme Toggle ──────────────────────────────────────────── */
 .theme-toggle-btn {
-  width: 30px;
-  height: 30px;
+  width: 34px;
+  height: 34px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -218,6 +218,22 @@
   font-weight: 500;
   letter-spacing: 0.14em;
   text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* ─── Shortcut Hints ──────────────────────────────────────── */
+.shortcut-hint {
+  margin-left: auto;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text);
+  opacity: 0.8;
+  font-family: "SF Mono", "Monaco", "Menlo", "Consolas", monospace;
+  letter-spacing: 0.05em;
+  padding: 4px 8px;
+  background: var(--surface-raised);
+  border-radius: 5px;
+  border: 1px solid var(--border);
   white-space: nowrap;
 }
 
@@ -370,19 +386,19 @@
 }
 
 .sync-scroll-btn {
-  height: 28px;
+  height: 32px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 5px;
-  padding: 0 10px;
+  gap: 6px;
+  padding: 0 12px;
   background: transparent;
   border: 1px solid var(--border);
   border-radius: 6px;
   color: var(--text-muted);
   cursor: pointer;
   transition: all 120ms;
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   font-weight: 500;
   letter-spacing: 0.02em;
 }

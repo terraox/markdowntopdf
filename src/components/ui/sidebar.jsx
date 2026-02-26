@@ -186,7 +186,7 @@ export function SidebarMenuButton({ isActive, tooltip, className, children, ...p
   const { state } = useSidebar()
   const collapsed = state === 'collapsed'
 
-  // When collapsed, only render icon children (non-span elements)
+  // When collapsed, hide text spans and shortcut hints, keep only icons
   const visibleChildren = collapsed
     ? Children.toArray(children).filter(
         (child) => !isValidElement(child) || child.type !== 'span',

@@ -69,8 +69,8 @@ export function PreviewPanel() {
           onClick={toggleSyncScroll}
           title={syncScroll ? "Sync scroll enabled" : "Sync scroll disabled"}
         >
-          <ArrowUpDown size={14} />
-          <span className="sync-label">{syncScroll ? 'Sync' : 'Sync'}</span>
+          <ArrowUpDown size={15} />
+          <span className="sync-label">Sync Scroll</span>
         </button>
       </div>
       <div

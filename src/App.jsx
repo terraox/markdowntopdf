@@ -27,6 +27,10 @@ function App() {
   const { newFile } = useWorkspaceStore()
   const fileInputRef = useRef(null)
 
+  // Detect operating system
+  const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0
+  const modKey = isMac ? '⌘' : 'Ctrl'
+  
   const handleOpenFile = () => fileInputRef.current?.click()
 
   const handleFileChange = (e) => {
@@ -105,21 +109,24 @@ function App() {
                 <SidebarGroupContent>
                   <SidebarMenu>
                     <SidebarMenuItem>
-                      <SidebarMenuButton tooltip="New File (⌘N)" onClick={newFile}>
+                      <SidebarMenuButton tooltip={`New File (${modKey}+N)`} onClick={newFile}>
                         <FilePlus size={15} />
                         <span>New File</span>
+                        <span className="shortcut-hint">{modKey}+N</span>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
                     <SidebarMenuItem>
-                      <SidebarMenuButton tooltip="Open File (⌘O)" onClick={handleOpenFile}>
+                      <SidebarMenuButton tooltip={`Open File (${modKey}+O)`} onClick={handleOpenFile}>
                         <FileText size={15} />
                         <span>Open File</span>
+                        <span className="shortcut-hint">{modKey}+O</span>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
                     <SidebarMenuItem>
-                      <SidebarMenuButton tooltip="Open Folder (⌘⇧O)" disabled>
+                      <SidebarMenuButton tooltip={`Open Folder (${modKey}+Shift+O)`} disabled>
                         <FolderOpen size={15} />
                         <span>Open Folder</span>
+                        <span className="shortcut-hint">{modKey}+⇧+O</span>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
                   </SidebarMenu>

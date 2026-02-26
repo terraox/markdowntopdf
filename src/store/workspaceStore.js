@@ -117,9 +117,9 @@ export const useWorkspaceStore = create((set, get) => ({
     while (files[`untitled-${n}.md`]) n++;
     const filename = `untitled-${n}.md`;
     set({
-      files: { ...files, [filename]: '' },
+      files: { ...files, [filename]: "" },
       activeFile: filename,
       openTabs: [...openTabs, filename],
     });
   },
-}))
+}));
