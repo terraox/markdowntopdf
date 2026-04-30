@@ -7,6 +7,7 @@ import { buildPdfHtml, generatePdfBlob, downloadBlob, mdNameToPdf } from '../uti
 export function ExportMenu() {
   const [open, setOpen] = useState(false)
   const [status, setStatus] = useState(null) // null | 'exporting' | string (progress)
+  const [theme, setTheme] = useState('light') // 'light' | 'dark' | 'both'
   const menuRef = useRef(null)
 
   const { isExporting, setIsExporting, getActiveContent, activeFile, files } = useWorkspaceStore()
@@ -35,38 +36,81 @@ export function ExportMenu() {
 
   // ── Option 1: current file → PDF ──────────────────────────────
   const exportCurrent = () => withExporting(async () => {
-    const html = buildPdfHtml(getActiveContent())
-    const blob = await generatePdfBlob(html)
-    downloadBlob(blob, mdNameToPdf(activeFile ?? 'document.md'))
+    const themesToExport = theme === 'both' ? ['light', 'dark'] : [theme]
+    const content = getActiveContent()
+    const fileName = activeFile ?? 'document.md'
+
+    setStatus(`Exporting…`)
+    
+    // Generate PDFs in parallel for speed
+    const generateTasks = themesToExport.map(async (t) => {
+      const html = buildPdfHtml(content, t)
+      const blob = await generatePdfBlob(html)
+      return { t, blob }
+    })
+    
+    const results = await Promise.all(generateTasks)
+    
+    // Download them sequentially but they were generated in parallel
+    for (const { t, blob } of results) {
+      const suffix = theme === 'both' ? `-${t}` : ''
+      downloadBlob(blob, mdNameToPdf(fileName, suffix))
+      if (themesToExport.length > 1) {
+        await new Promise((r) => setTimeout(r, 300)) // slight gap to avoid browser blocking multiple downloads
+      }
+    }
   })
 
   // ── Option 2: all files → ZIP of PDFs ─────────────────────────
   const exportAllZip = () => withExporting(async () => {
     const entries = Object.entries(files)
     const zip = new JSZip()
+    const themesToExport = theme === 'both' ? ['light', 'dark'] : [theme]
+
     for (let i = 0; i < entries.length; i++) {
       const [filename, content] = entries[i]
       setStatus(`Generating ${i + 1}/${entries.length}: ${filename}`)
-      const html = buildPdfHtml(content)
-      const blob = await generatePdfBlob(html)
-      zip.file(mdNameToPdf(filename), blob)
+      
+      const generateTasks = themesToExport.map(async (t) => {
+        const html = buildPdfHtml(content, t)
+        const blob = await generatePdfBlob(html)
+        return { t, blob }
+      })
+      
+      const results = await Promise.all(generateTasks)
+      
+      for (const { t, blob } of results) {
+        const suffix = theme === 'both' ? `-${t}` : ''
+        zip.file(mdNameToPdf(filename, suffix), blob)
+      }
     }
     setStatus('Building ZIP…')
     const zipBlob = await zip.generateAsync({ type: 'blob' })
-    downloadBlob(zipBlob, 'markdowntopdf-export.zip')
+    downloadBlob(zipBlob, `markdowntopdf-export${theme !== 'both' ? `-${theme}` : ''}.zip`)
   })
 
   // ── Option 3: all files → individual PDF downloads ────────────
   const exportAllIndividual = () => withExporting(async () => {
     const entries = Object.entries(files)
+    const themesToExport = theme === 'both' ? ['light', 'dark'] : [theme]
+
     for (let i = 0; i < entries.length; i++) {
       const [filename, content] = entries[i]
       setStatus(`Downloading ${i + 1}/${entries.length}: ${filename}`)
-      const html = buildPdfHtml(content)
-      const blob = await generatePdfBlob(html)
-      downloadBlob(blob, mdNameToPdf(filename))
-      // Small gap so browser doesn't block multiple downloads
-      await new Promise((r) => setTimeout(r, 300))
+      
+      const generateTasks = themesToExport.map(async (t) => {
+        const html = buildPdfHtml(content, t)
+        const blob = await generatePdfBlob(html)
+        return { t, blob }
+      })
+      
+      const results = await Promise.all(generateTasks)
+      
+      for (const { t, blob } of results) {
+        const suffix = theme === 'both' ? `-${t}` : ''
+        downloadBlob(blob, mdNameToPdf(filename, suffix))
+        await new Promise((r) => setTimeout(r, 300))
+      }
     }
   })
 
@@ -74,28 +118,36 @@ export function ExportMenu() {
 
   return (
     <div className="export-menu" ref={menuRef}>
-      <div className={`export-btn-group ${busy ? 'export-btn-group--busy' : ''}`}>
-        <button
-          className="export-btn-main"
-          onClick={exportCurrent}
-          disabled={busy}
-          title="Export current file as PDF"
-        >
-          <Download size={13} />
-          {busy ? (status ?? 'Exporting…') : 'Export PDF'}
-        </button>
-        <button
-          className="export-btn-arrow"
-          onClick={() => !busy && setOpen((o) => !o)}
-          disabled={busy}
-          aria-label="More export options"
-        >
-          <ChevronDown size={13} className={open ? 'rotate-180' : ''} />
-        </button>
-      </div>
+      <button
+        className={`export-btn-main ${busy ? 'export-btn-group--busy' : ''}`}
+        onClick={() => !busy && setOpen((o) => !o)}
+        disabled={busy}
+        title="Export options"
+        style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}
+      >
+        <Download size={13} />
+        {busy ? (status ?? 'Exporting…') : 'Export PDF'}
+        <ChevronDown size={13} className={open ? 'rotate-180' : ''} style={{ marginLeft: '4px' }}/>
+      </button>
 
       {open && (
         <div className="export-dropdown">
+          <div style={{ padding: '8px 12px', display: 'flex', gap: '8px', alignItems: 'center' }}>
+            <label style={{ fontSize: '13px', fontWeight: '500', color: 'var(--text-secondary)' }}>Theme:</label>
+            <select 
+              value={theme} 
+              onChange={e => setTheme(e.target.value)}
+              style={{
+                flex: 1, padding: '4px', borderRadius: '4px', border: '1px solid var(--border)', 
+                fontSize: '13px', background: 'var(--bg-primary)', color: 'var(--text-primary)', outline: 'none'
+              }}
+            >
+              <option value="light">Light</option>
+              <option value="dark">Dark</option>
+              <option value="both">Both (Light & Dark)</option>
+            </select>
+          </div>
+          <div className="export-divider" />
           <button className="export-option" onClick={exportCurrent}>
             <Download size={14} />
             <span>

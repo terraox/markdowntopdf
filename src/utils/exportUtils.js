@@ -1,7 +1,7 @@
 import { renderMarkdown } from "./markdownRenderer";
 
-const PDF_STYLES = `
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 800px; margin: 40px auto; padding: 0 40px; line-height: 1.7; color: #111; }
+const LIGHT_PDF_STYLES = `
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 800px; margin: 40px auto; padding: 0 40px; line-height: 1.7; color: #111; background: #fff; }
   h1,h2,h3,h4 { margin-top: 1.5em; margin-bottom: 0.5em; }
   h1 { font-size: 2em; } h2 { font-size: 1.5em; border-bottom: 1px solid #e5e7eb; padding-bottom: 0.3em; }
   code { background: #f4f4f4; padding: 2px 6px; border-radius: 4px; font-size: 0.9em; font-family: 'JetBrains Mono', monospace; color: #111; }
@@ -17,9 +17,27 @@ const PDF_STYLES = `
   a { color: #111; }
 `;
 
-export function buildPdfHtml(markdownContent) {
+const DARK_PDF_STYLES = `
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 800px; margin: 40px auto; padding: 0 40px; line-height: 1.7; color: #e5e7eb; background: #111827; }
+  h1,h2,h3,h4 { margin-top: 1.5em; margin-bottom: 0.5em; color: #f9fafb; }
+  h1 { font-size: 2em; } h2 { font-size: 1.5em; border-bottom: 1px solid #374151; padding-bottom: 0.3em; }
+  code { background: #1f2937; padding: 2px 6px; border-radius: 4px; font-size: 0.9em; font-family: 'JetBrains Mono', monospace; color: #f3f4f6; }
+  pre { background: #1f2937; padding: 16px; border-radius: 6px; overflow-x: auto; }
+  pre code { background: none; padding: 0; color: #e5e7eb; }
+  blockquote { border-left: 4px solid #4b5563; margin: 0; padding: 0 16px; color: #9ca3af; }
+  img { max-width: 100%; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { border: 1px solid #4b5563; padding: 8px 12px; }
+  th { background: #1f2937; font-weight: 600; color: #f9fafb; }
+  hr { border: none; border-top: 1px solid #374151; }
+  ul, ol { padding-left: 1.5em; }
+  a { color: #60a5fa; }
+`;
+
+export function buildPdfHtml(markdownContent, theme = 'light') {
   const body = renderMarkdown(markdownContent);
-  return `<!DOCTYPE html><html><head><meta charset="utf-8"><style>${PDF_STYLES}</style></head><body>${body}</body></html>`;
+  const styles = theme === 'dark' ? DARK_PDF_STYLES : LIGHT_PDF_STYLES;
+  return `<!DOCTYPE html><html><head><meta charset="utf-8"><style>${styles}</style></head><body>${body}</body></html>`;
 }
 
 export async function generatePdfBlob(html) {
@@ -41,6 +59,6 @@ export function downloadBlob(blob, filename) {
   URL.revokeObjectURL(url);
 }
 
-export function mdNameToPdf(filename) {
-  return filename.replace(/\.mdx?$/, "") + ".pdf";
+export function mdNameToPdf(filename, suffix = '') {
+  return filename.replace(/\.mdx?$/, "") + suffix + ".pdf";
 }

@@ -82,8 +82,8 @@ function App() {
             <span className="app-title">markdowntopdf</span>
           </div>
           <div className="app-header-right">
-            <AnimatedThemeToggler />
             <ExportMenu />
+            <AnimatedThemeToggler />
           </div>
         </header>
 

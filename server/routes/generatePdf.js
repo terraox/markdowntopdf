@@ -37,7 +37,7 @@ router.post("/generate-pdf", async (req, res) => {
     const b = await getBrowser();
     page = await b.newPage();
 
-    await page.setContent(html, { waitUntil: "networkidle0" });
+    await page.setContent(html, { waitUntil: "load" });
 
     const pdfData = await page.pdf({ format, printBackground, margin });
 
