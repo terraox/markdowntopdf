@@ -4,9 +4,40 @@ import { EditorView, keymap, lineNumbers, highlightActiveLine, highlightActiveLi
 import { defaultKeymap, history, historyKeymap, indentWithTab } from '@codemirror/commands'
 import { markdown, markdownLanguage } from '@codemirror/lang-markdown'
 import { languages } from '@codemirror/language-data'
-import { syntaxHighlighting, defaultHighlightStyle, bracketMatching } from '@codemirror/language'
-import { oneDark } from '@codemirror/theme-one-dark'
+import {
+  syntaxHighlighting,
+  defaultHighlightStyle,
+  bracketMatching,
+  HighlightStyle,
+} from '@codemirror/language'
+import { tags } from '@lezer/highlight'
+import { oneDarkHighlightStyle } from '@codemirror/theme-one-dark'
 import { useWorkspaceStore } from '../store/workspaceStore'
+
+// Match tools like markdowntopdf.com: ATX heading lines are visibly underlined in the editor.
+const markdownEditorHighlight = HighlightStyle.define([
+  ...defaultHighlightStyle.specs,
+  {
+    tag: tags.heading,
+    fontWeight: '600',
+    textDecoration: 'underline',
+    textUnderlineOffset: '3px',
+    textDecorationSkipInk: 'none',
+  },
+])
+
+// Same heading treatment in dark; base chrome uses app CSS variables (matches preview).
+const darkMarkdownEditorHighlight = HighlightStyle.define([
+  ...oneDarkHighlightStyle.specs,
+  {
+    tag: tags.heading,
+    fontWeight: '600',
+    textDecoration: 'underline',
+    textUnderlineOffset: '3px',
+    textDecorationSkipInk: 'none',
+    color: 'var(--text)',
+  },
+])
 
 // ── Light theme ────────────────────────────────────────────────
 const lightTheme = EditorView.theme({
@@ -36,22 +67,41 @@ const lightTheme = EditorView.theme({
   '&.cm-focused': { outline: 'none' },
 }, { dark: false })
 
-// ── Dark theme overrides ───────────────────────────────────────
-const darkTheme = EditorView.theme({
+// ── Dark: same surface colors as the preview (see index.css :root.dark) — not One Dark’s gray/blue panel
+const darkEditorTheme = EditorView.theme({
   '&': {
     height: '100%',
     fontSize: '14px',
     fontFamily: '"JetBrains Mono", "Fira Code", "Cascadia Code", monospace',
+    background: 'var(--bg)',
+    color: 'var(--text)',
   },
-  '.cm-line': { padding: '0 20px' },
-  '.cm-content': { padding: '16px 0' },
-  '&.cm-focused': { outline: 'none' },
   '.cm-scroller': { overflow: 'auto' },
+  '.cm-content': { caretColor: 'var(--text)', padding: '16px 0' },
+  '.cm-line': { padding: '0 20px' },
+  '.cm-gutters': {
+    background: 'var(--bg)',
+    color: 'var(--text-muted)',
+    border: 'none',
+    minWidth: '40px',
+  },
+  '.cm-gutter': { background: 'var(--bg)' },
+  '.cm-gutterElement': { padding: '0 8px 0 4px' },
+  '.cm-lineNumbers .cm-gutterElement': { minWidth: '28px', textAlign: 'right' },
+  '.cm-activeLineGutter': { background: 'var(--surface-raised)', color: 'var(--text)' },
+  '.cm-activeLine': { background: 'var(--surface-raised)' },
+  '.cm-selectionBackground, ::selection': {
+    background: 'rgba(255, 255, 255, 0.12) !important',
+  },
+  '.cm-cursor': { borderLeftColor: 'var(--text)' },
+  '&.cm-focused': { outline: 'none' },
 }, { dark: true })
 
 function buildExtensions(isDark, onUpdate) {
   return [
-    isDark ? [oneDark, darkTheme] : [lightTheme, syntaxHighlighting(defaultHighlightStyle)],
+    isDark
+      ? [darkEditorTheme, syntaxHighlighting(darkMarkdownEditorHighlight)]
+      : [lightTheme, syntaxHighlighting(markdownEditorHighlight)],
     lineNumbers(),
     highlightActiveLine(),
     highlightActiveLineGutter(),

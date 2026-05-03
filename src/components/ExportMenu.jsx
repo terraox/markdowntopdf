@@ -2,7 +2,13 @@ import { useEffect, useRef, useState } from 'react'
 import { ChevronDown, Download, Archive, Files } from 'lucide-react'
 import JSZip from 'jszip'
 import { useWorkspaceStore } from '../store/workspaceStore'
-import { buildPdfHtml, generatePdfBlob, downloadBlob, mdNameToPdf } from '../utils/exportUtils'
+import {
+  buildPdfHtml,
+  generatePdfBlob,
+  downloadBlob,
+  mdNameToPdf,
+  getPdfGenerationOptions,
+} from '../utils/exportUtils'
 
 export function ExportMenu() {
   const [open, setOpen] = useState(false)
@@ -45,7 +51,7 @@ export function ExportMenu() {
     // Generate PDFs in parallel for speed
     const generateTasks = themesToExport.map(async (t) => {
       const html = buildPdfHtml(content, t)
-      const blob = await generatePdfBlob(html)
+      const blob = await generatePdfBlob(html, getPdfGenerationOptions(t))
       return { t, blob }
     })
     
@@ -73,7 +79,7 @@ export function ExportMenu() {
       
       const generateTasks = themesToExport.map(async (t) => {
         const html = buildPdfHtml(content, t)
-        const blob = await generatePdfBlob(html)
+        const blob = await generatePdfBlob(html, getPdfGenerationOptions(t))
         return { t, blob }
       })
       
@@ -100,7 +106,7 @@ export function ExportMenu() {
       
       const generateTasks = themesToExport.map(async (t) => {
         const html = buildPdfHtml(content, t)
-        const blob = await generatePdfBlob(html)
+        const blob = await generatePdfBlob(html, getPdfGenerationOptions(t))
         return { t, blob }
       })
       

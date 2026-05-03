@@ -1,50 +1,173 @@
 import { renderMarkdown } from "./markdownRenderer";
 
+/** Styles HTML used only for PDF generation (not the in-app preview). */
 const LIGHT_PDF_STYLES = `
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 800px; margin: 40px auto; padding: 0 40px; line-height: 1.7; color: #111; background: #fff; }
-  h1,h2,h3,h4 { margin-top: 1.5em; margin-bottom: 0.5em; }
-  h1 { font-size: 2em; } h2 { font-size: 1.5em; border-bottom: 1px solid #e5e7eb; padding-bottom: 0.3em; }
-  code { background: #f4f4f4; padding: 2px 6px; border-radius: 4px; font-size: 0.9em; font-family: 'JetBrains Mono', monospace; color: #111; }
-  pre { background: #f4f4f4; padding: 16px; border-radius: 6px; overflow-x: auto; }
-  pre code { background: none; padding: 0; color: #111; }
-  blockquote { border-left: 4px solid #d1d5db; margin: 0; padding: 0 16px; color: #6b7280; }
-  img { max-width: 100%; }
-  table { border-collapse: collapse; width: 100%; }
-  th, td { border: 1px solid #d1d5db; padding: 8px 12px; }
-  th { background: #f9fafb; font-weight: 600; }
-  hr { border: none; border-top: 1px solid #e5e7eb; }
-  ul, ol { padding-left: 1.5em; }
-  a { color: #111; }
+  * { box-sizing: border-box; }
+  @page {
+    margin: 20mm;
+    background-color: #ffffff;
+  }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background-color: #ffffff !important;
+    color: #111827;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-size: 15px;
+    line-height: 1.75;
+    width: 100%;
+    -webkit-font-smoothing: antialiased;
+  }
+  body > *:first-child { margin-top: 0; }
+  h1, h2, h3, h4, h5, h6 { font-weight: 700; line-height: 1.25; color: #111827; }
+  h1 { font-size: 2rem; margin: 0 0 0.75em; }
+  h2 { font-size: 1.5rem; margin: 1.35em 0 0.5em; border-bottom: 1px solid #e5e7eb; padding-bottom: 0.35em; }
+  h3 { font-size: 1.25rem; margin: 1.25em 0 0.45em; }
+  h4 { font-size: 1rem; margin: 1.1em 0 0.4em; }
+  p { margin: 0.75em 0; }
+  code {
+    font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+    font-size: 0.875em;
+    background: #f3f4f6;
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: #111827;
+  }
+  pre {
+    font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+    background: #f3f4f6;
+    padding: 16px 20px;
+    border-radius: 8px;
+    overflow-x: auto;
+    border: 1px solid #e5e7eb;
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+  pre code { background: none; padding: 0; border-radius: 0; font-size: inherit; color: #111827; }
+  blockquote {
+    border-left: 3px solid #d1d5db;
+    margin: 1em 0;
+    padding: 4px 0 4px 16px;
+    color: #6b7280;
+    background: transparent;
+  }
+  img { max-width: 100%; border-radius: 4px; }
+  table { border-collapse: collapse; width: 100%; margin: 1.15em 0; font-size: 0.9375rem; }
+  th, td { border: 1px solid #e5e7eb; padding: 10px 14px; text-align: left; vertical-align: top; }
+  th { background: #f3f4f6; font-weight: 600; color: #111827; }
+  tbody tr:nth-child(even) { background: #fafafa; }
+  tbody tr:nth-child(even) td { border-color: #e5e7eb; }
+  hr { border: none; border-top: 1px solid #e5e7eb; margin: 2em 0; }
+  ul, ol { padding-left: 1.5em; margin: 0.75em 0; }
+  li { margin: 0.25em 0; }
+  a { color: #111827; text-decoration: underline; }
 `;
 
+/**
+ * Pixel-identical layout to LIGHT_PDF_STYLES (same margins, box model, min-height) so pagination matches.
+ * Only colors differ. Uses the same Puppeteer page margins as light — viewport width/height match → same wraps.
+ * Note: Chromium still paints the PDF margin strip outside the viewport white; only the inner area is dark.
+ */
 const DARK_PDF_STYLES = `
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 800px; margin: 40px auto; padding: 0 40px; line-height: 1.7; color: #e5e7eb; background: #111827; }
-  h1,h2,h3,h4 { margin-top: 1.5em; margin-bottom: 0.5em; color: #f9fafb; }
-  h1 { font-size: 2em; } h2 { font-size: 1.5em; border-bottom: 1px solid #374151; padding-bottom: 0.3em; }
-  code { background: #1f2937; padding: 2px 6px; border-radius: 4px; font-size: 0.9em; font-family: 'JetBrains Mono', monospace; color: #f3f4f6; }
-  pre { background: #1f2937; padding: 16px; border-radius: 6px; overflow-x: auto; }
-  pre code { background: none; padding: 0; color: #e5e7eb; }
-  blockquote { border-left: 4px solid #4b5563; margin: 0; padding: 0 16px; color: #9ca3af; }
-  img { max-width: 100%; }
-  table { border-collapse: collapse; width: 100%; }
-  th, td { border: 1px solid #4b5563; padding: 8px 12px; }
-  th { background: #1f2937; font-weight: 600; color: #f9fafb; }
-  hr { border: none; border-top: 1px solid #374151; }
-  ul, ol { padding-left: 1.5em; }
-  a { color: #60a5fa; }
+  * { box-sizing: border-box; }
+  @page {
+    margin: 20mm;
+    background-color: #0a0a0a;
+  }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background-color: #0a0a0a !important;
+    color: #f5f5f5;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-size: 15px;
+    line-height: 1.75;
+    width: 100%;
+    -webkit-font-smoothing: antialiased;
+  }
+  @media print {
+    html, body {
+      background-color: #0a0a0a !important;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+  }
+  body > *:first-child { margin-top: 0; }
+  h1, h2, h3, h4, h5, h6 { font-weight: 700; line-height: 1.25; color: #f5f5f5; }
+  h1 { font-size: 2rem; margin: 0 0 0.75em; }
+  h2 { font-size: 1.5rem; margin: 1.35em 0 0.5em; border-bottom: 1px solid #404040; padding-bottom: 0.35em; }
+  h3 { font-size: 1.25rem; margin: 1.25em 0 0.45em; }
+  h4 { font-size: 1rem; margin: 1.1em 0 0.4em; }
+  p { margin: 0.75em 0; }
+  code {
+    font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+    font-size: 0.875em;
+    background: #262626;
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: #f5f5f5;
+  }
+  pre {
+    font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+    background: #262626;
+    padding: 16px 20px;
+    border-radius: 8px;
+    overflow-x: auto;
+    border: 1px solid #404040;
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+  pre code { background: none; padding: 0; border-radius: 0; font-size: inherit; color: #f5f5f5; }
+  blockquote {
+    border-left: 3px solid #525252;
+    margin: 1em 0;
+    padding: 4px 0 4px 16px;
+    color: #a3a3a3;
+    background: transparent;
+  }
+  img { max-width: 100%; border-radius: 4px; }
+  table { border-collapse: collapse; width: 100%; margin: 1.15em 0; font-size: 0.9375rem; }
+  th, td { border: 1px solid #404040; padding: 10px 14px; text-align: left; vertical-align: top; }
+  th { background: #262626; font-weight: 600; color: #f5f5f5; }
+  tbody tr:nth-child(even) { background: #141414; }
+  tbody tr:nth-child(even) td { border-color: #404040; }
+  hr { border: none; border-top: 1px solid #404040; margin: 2em 0; }
+  ul, ol { padding-left: 1.5em; margin: 0.75em 0; }
+  li { margin: 0.25em 0; }
+  a { color: #f5f5f5; text-decoration: underline; }
 `;
+
+const FONT_LINKS = `<link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin /><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />`;
+
+/** Same printable box for every export — required so light/dark PDFs paginate identically. */
+export function getPdfGenerationOptions(_theme = "light") {
+  // Use zero margins in Puppeteer to ensure background colors fill the page.
+  // The actual document margins are handled in CSS via @page { margin: 20mm }.
+  return {
+    printBackground: true,
+    margin: { top: "0", right: "0", bottom: "0", left: "0" },
+  };
+}
 
 export function buildPdfHtml(markdownContent, theme = 'light') {
   const body = renderMarkdown(markdownContent);
   const styles = theme === 'dark' ? DARK_PDF_STYLES : LIGHT_PDF_STYLES;
-  return `<!DOCTYPE html><html><head><meta charset="utf-8"><style>${styles}</style></head><body>${body}</body></html>`;
+  return `<!DOCTYPE html><html><head><meta charset="utf-8" />${FONT_LINKS}<style>${styles}</style></head><body>${body}</body></html>`;
 }
 
-export async function generatePdfBlob(html) {
+export async function generatePdfBlob(html, pdfOptions = {}) {
   const res = await fetch("http://localhost:6001/api/generate-pdf", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ html }),
+    body: JSON.stringify({ html, options: pdfOptions }),
   });
   if (!res.ok) throw new Error(`Server error: ${res.status}`);
   return res.blob();
