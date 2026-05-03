@@ -26,17 +26,21 @@ const markdownEditorHighlight = HighlightStyle.define([
   },
 ])
 
-// Same heading treatment in dark; base chrome uses app CSS variables (matches preview).
+// Minimalist dark highlight style that matches the app's premium aesthetic and the preview panel.
 const darkMarkdownEditorHighlight = HighlightStyle.define([
-  ...oneDarkHighlightStyle.specs,
-  {
-    tag: tags.heading,
-    fontWeight: '600',
-    textDecoration: 'underline',
-    textUnderlineOffset: '3px',
-    textDecorationSkipInk: 'none',
-    color: 'var(--text)',
-  },
+  { tag: tags.heading, fontWeight: '700', color: 'var(--text)', textDecoration: 'underline', textUnderlineOffset: '3px' },
+  { tag: tags.keyword, color: '#c678dd' }, // Subtle purple for keywords
+  { tag: tags.atom, color: '#d19a66' },    // Muted orange
+  { tag: tags.number, color: '#d19a66' },
+  { tag: tags.string, color: '#98c379' },  // Sage green
+  { tag: tags.variableName, color: 'var(--text)' },
+  { tag: tags.comment, color: 'var(--text-muted)', fontStyle: 'italic' },
+  { tag: tags.meta, color: 'var(--text-muted)' },
+  { tag: tags.link, color: 'var(--text)', textDecoration: 'underline' },
+  { tag: tags.url, color: 'var(--text-muted)' },
+  { tag: tags.emphasis, fontStyle: 'italic' },
+  { tag: tags.strong, fontWeight: '700' },
+  { tag: tags.strikethrough, textDecoration: 'line-through' },
 ])
 
 // ── Light theme ────────────────────────────────────────────────
