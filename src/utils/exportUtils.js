@@ -157,10 +157,10 @@ export function getPdfGenerationOptions(_theme = "light") {
   };
 }
 
-export function buildPdfHtml(markdownContent, theme = 'light') {
+export function buildPdfHtml(markdownContent, theme = 'light', title = 'Document') {
   const body = renderMarkdown(markdownContent);
   const styles = theme === 'dark' ? DARK_PDF_STYLES : LIGHT_PDF_STYLES;
-  return `<!DOCTYPE html><html><head><meta charset="utf-8" />${FONT_LINKS}<style>${styles}</style></head><body>${body}</body></html>`;
+  return `<!DOCTYPE html><html><head><meta charset="utf-8" /><title>${title}</title>${FONT_LINKS}<style>${styles}</style></head><body>${body}</body></html>`;
 }
 
 export async function generatePdfBlob(html, pdfOptions = {}) {

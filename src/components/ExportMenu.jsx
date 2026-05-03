@@ -50,7 +50,8 @@ export function ExportMenu() {
     
     // Generate PDFs in parallel for speed
     const generateTasks = themesToExport.map(async (t) => {
-      const html = buildPdfHtml(content, t)
+      const title = fileName.replace(/\.mdx?$/, "")
+      const html = buildPdfHtml(content, t, title)
       const blob = await generatePdfBlob(html, getPdfGenerationOptions(t))
       return { t, blob }
     })
@@ -78,7 +79,8 @@ export function ExportMenu() {
       setStatus(`Generating ${i + 1}/${entries.length}: ${filename}`)
       
       const generateTasks = themesToExport.map(async (t) => {
-        const html = buildPdfHtml(content, t)
+        const title = filename.replace(/\.mdx?$/, "")
+        const html = buildPdfHtml(content, t, title)
         const blob = await generatePdfBlob(html, getPdfGenerationOptions(t))
         return { t, blob }
       })
@@ -105,7 +107,8 @@ export function ExportMenu() {
       setStatus(`Downloading ${i + 1}/${entries.length}: ${filename}`)
       
       const generateTasks = themesToExport.map(async (t) => {
-        const html = buildPdfHtml(content, t)
+        const title = filename.replace(/\.mdx?$/, "")
+        const html = buildPdfHtml(content, t, title)
         const blob = await generatePdfBlob(html, getPdfGenerationOptions(t))
         return { t, blob }
       })
