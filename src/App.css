@@ -713,3 +713,215 @@
   background: var(--border);
   margin: 4px 0;
 }
+
+/* ─── Task Lists / Checklists ────────────────────────────────── */
+.markdown-body .contains-task-list {
+  list-style-type: none;
+  padding-left: 0.5em;
+}
+
+.markdown-body .task-list-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0.35em 0;
+}
+
+.markdown-body .task-list-item-checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid var(--border);
+  border-radius: 4px;
+  background: var(--surface);
+  cursor: pointer;
+  display: inline-grid;
+  place-content: center;
+  margin: 0;
+  transition: all 120ms ease;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.markdown-body .task-list-item-checkbox:hover {
+  border-color: #3b82f6;
+}
+
+.markdown-body .task-list-item-checkbox:checked {
+  background: #2563eb;
+  border-color: #2563eb;
+}
+
+.markdown-body .task-list-item-checkbox:checked::after {
+  content: "";
+  width: 9px;
+  height: 5px;
+  border-left: 2px solid #ffffff;
+  border-bottom: 2px solid #ffffff;
+  transform: rotate(-45deg) translate(1px, -1px);
+}
+
+.markdown-body .task-list-item-label {
+  cursor: pointer;
+  user-select: none;
+}
+
+/* ─── KaTeX Math Equations ───────────────────────────────────── */
+.markdown-body .katex {
+  font-size: 1.05em;
+  text-rendering: auto;
+}
+
+.markdown-body .katex-display-block {
+  margin: 1.25em 0;
+  padding: 12px 16px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  text-align: center;
+  background: var(--surface);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+
+.markdown-body .katex-error {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+
+.markdown-body .katex-error-block {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  margin: 1em 0;
+  font-family: monospace;
+}
+
+/* ─── Mermaid Diagrams ───────────────────────────────────────── */
+.markdown-body .mermaid-wrapper {
+  margin: 1.75em 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 24px 28px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow-x: auto;
+  min-height: 120px;
+}
+
+.markdown-body .mermaid {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.markdown-body .mermaid svg {
+  width: 100% !important;
+  max-width: 680px !important;
+  height: auto !important;
+  font-family: inherit;
+}
+
+.markdown-body .mermaid-error {
+  color: #ef4444;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.markdown-body .mermaid-raw code {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* ─── Callouts / Admonitions ─────────────────────────────────── */
+.markdown-body .callout-card {
+  margin: 1.25em 0;
+  padding: 14px 18px;
+  border-radius: 8px;
+  border-left: 4px solid #3b82f6;
+  background: rgba(59, 130, 246, 0.07);
+}
+
+.markdown-body .callout-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: 6px;
+  color: var(--text);
+}
+
+.markdown-body .callout-body {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--text);
+}
+
+.markdown-body .callout-body > p {
+  margin: 0.35em 0;
+}
+
+.markdown-body .callout-body > p:first-child {
+  margin-top: 0;
+}
+
+.markdown-body .callout-body > p:last-child {
+  margin-bottom: 0;
+}
+
+/* Callout variants */
+.markdown-body .callout-tip {
+  border-left-color: #0ea5e9;
+  background: rgba(14, 165, 233, 0.08);
+}
+.markdown-body .callout-tip .callout-header {
+  color: #0284c7;
+}
+
+.markdown-body .callout-note {
+  border-left-color: #6366f1;
+  background: rgba(99, 102, 241, 0.08);
+}
+.markdown-body .callout-note .callout-header {
+  color: #4f46e5;
+}
+
+.markdown-body .callout-warning {
+  border-left-color: #f59e0b;
+  background: rgba(245, 158, 11, 0.09);
+}
+.markdown-body .callout-warning .callout-header {
+  color: #d97706;
+}
+
+.markdown-body .callout-important,
+.markdown-body .callout-caution {
+  border-left-color: #ef4444;
+  background: rgba(239, 68, 68, 0.08);
+}
+.markdown-body .callout-important .callout-header,
+.markdown-body .callout-caution .callout-header {
+  color: #dc2626;
+}
+
+/* Dark mode adjustments for callouts */
+:root.dark .markdown-body .callout-tip .callout-header { color: #38bdf8; }
+:root.dark .markdown-body .callout-note .callout-header { color: #818cf8; }
+:root.dark .markdown-body .callout-warning .callout-header { color: #fbbf24; }
+:root.dark .markdown-body .callout-important .callout-header,
+:root.dark .markdown-body .callout-caution .callout-header { color: #f87171; }
+
+.markdown-body u {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+

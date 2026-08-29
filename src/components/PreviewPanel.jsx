@@ -1,6 +1,7 @@
-import { useMemo, useRef, useEffect } from 'react'
+import { useMemo, useRef, useEffect, useState } from 'react'
 import { useWorkspaceStore } from '../store/workspaceStore'
 import { renderMarkdown } from '../utils/markdownRenderer'
+import { renderMermaidDiagrams } from '../utils/mermaidRenderer'
 import { ArrowUpDown } from 'lucide-react'
 
 export function PreviewPanel() {
@@ -10,7 +11,25 @@ export function PreviewPanel() {
   const html = useMemo(() => renderMarkdown(content), [content])
   const previewRef = useRef(null)
   const isScrollingRef = useRef(false)
+  const [isDark, setIsDark] = useState(() => document.documentElement.classList.contains('dark'))
 
+  // Listen for dark mode class changes on <html>
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      setIsDark(document.documentElement.classList.contains('dark'))
+    })
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
+    return () => observer.disconnect()
+  }, [])
+
+  // Render Mermaid diagrams whenever HTML or theme changes
+  useEffect(() => {
+    if (previewRef.current) {
+      renderMermaidDiagrams(previewRef.current, isDark)
+    }
+  }, [html, isDark])
+
+  // Sync scroll from preview to editor
   useEffect(() => {
     if (!syncScroll) return
 
@@ -20,7 +39,6 @@ export function PreviewPanel() {
 
       const scrollPercent = e.target.scrollTop / (e.target.scrollHeight - e.target.clientHeight)
       
-      // Dispatch custom event for editor to listen
       window.dispatchEvent(new CustomEvent('preview-scroll', { 
         detail: { scrollPercent } 
       }))
@@ -37,6 +55,7 @@ export function PreviewPanel() {
     }
   }, [syncScroll])
 
+  // Sync scroll from editor to preview
   useEffect(() => {
     if (!syncScroll) return
 

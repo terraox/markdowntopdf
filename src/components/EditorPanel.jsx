@@ -11,7 +11,6 @@ import {
   HighlightStyle,
 } from '@codemirror/language'
 import { tags } from '@lezer/highlight'
-import { oneDarkHighlightStyle } from '@codemirror/theme-one-dark'
 import { useWorkspaceStore } from '../store/workspaceStore'
 
 // Match tools like markdowntopdf.com: ATX heading lines are visibly underlined in the editor.

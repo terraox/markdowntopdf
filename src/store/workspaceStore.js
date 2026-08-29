@@ -1,31 +1,79 @@
 import { create } from "zustand";
 
-const DEFAULT_CONTENT = `# Welcome to markdowntopdf
+const DEFAULT_CONTENT = `<u>underlined text</u>
 
-Start writing your document here. The preview updates **live** as you type.
+# Markdown to PDF
 
-## Features
+### Paste AI output, notes, or a README — download a polished PDF.
 
-- Live Markdown preview
-- Syntax highlighted code blocks
-- PDF export
-- Dark & light themes
+Beautiful Markdown PDFs in one click — **no CSS**, no DIY styling. Use *emphasis*, ~~strikethrough~~, \`inline code\`, and [links](https://www.markdowntopdf.com).
 
-## Code Example
+## Get started
+
+1. Type or paste Markdown here
+2. Pick a typeface — preview updates live
+3. Click **Download PDF** (or DOCX)
+
+## Why people use it
+
+* Export **ChatGPT / Claude / Gemini** answers to PDF
+* Turn **Cursor** notes and specs into shareable docs
+* Build a **Markdown resume** or status report
+* Keep diagrams, math, and code looking clean in print
+
+## Checklist
+
+- [x] Headings, lists, and tables
+- [x] Syntax-highlighted code
+- [x] Mermaid diagrams
+- [x] LaTeX / KaTeX math
+- [ ] Your document next
+
+## Code
 
 \`\`\`javascript
-function greet(name) {
-  return \`Hello, \${name}!\`
+function hello(name) {
+  return \`Hello, \${name}!\`;
 }
 \`\`\`
 
-## Blockquote
+## Table
 
-> "The best documentation is the one that exists."
+| Use case | Why Markdown |
+| :--- | :--- |
+| AI chats | Copy → paste → PDF |
+| Resumes | Plain text you can version |
+| Reports | Fast structure, clean export |
+
+## Diagram (Mermaid)
+
+\`\`\`mermaid
+flowchart LR
+  A[Paste Markdown] --> B[Live preview]
+  B --> C[Download PDF]
+  C --> D[Share]
+\`\`\`
+
+## Math (LaTeX / KaTeX)
+
+Inline: $E = mc^2$
+
+$$\\int_0^1 x^2 \\, dx = \\frac{1}{3}$$
+
+## Nested list
+
+* Structure
+  * Headings and paragraphs
+  * Bullet, numbered, and task lists
+* Media
+  * Images and links
+  * Blockquotes
+
+> Tip: Downloads include a watermark. Create a free account to save Markdown in Workspace. Upgrade to Pro to remove the watermark, share public preview links, and unlock everything.
 
 ---
 
-Happy writing!
+Visit [https://www.markdowntopdf.com](https://www.markdowntopdf.com) — edit this sample, then export.
 `;
 
 export const useWorkspaceStore = create((set, get) => ({

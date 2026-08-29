@@ -65,6 +65,21 @@ const LIGHT_PDF_STYLES = `
   ul, ol { padding-left: 1.5em; margin: 0.75em 0; }
   li { margin: 0.25em 0; }
   a { color: #111827; text-decoration: underline; }
+  .contains-task-list { list-style-type: none; padding-left: 0.5em; }
+  .task-list-item { display: flex; align-items: center; gap: 8px; margin: 0.35em 0; }
+  .task-list-item-checkbox { width: 15px; height: 15px; accent-color: #2563eb; }
+  .katex-display-block { margin: 1.25em 0; padding: 12px; text-align: center; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb; }
+  .callout-card { margin: 1.25em 0; padding: 14px 18px; border-radius: 8px; border-left: 4px solid #3b82f6; background: #eff6ff; }
+  .callout-header { font-weight: 600; font-size: 0.9rem; margin-bottom: 6px; color: #1e40af; }
+  .callout-tip { border-left-color: #0ea5e9; background: #f0f9ff; }
+  .callout-tip .callout-header { color: #0369a1; }
+  .callout-note { border-left-color: #6366f1; background: #eef2ff; }
+  .callout-note .callout-header { color: #4338ca; }
+  .callout-warning { border-left-color: #f59e0b; background: #fffbeb; }
+  .callout-warning .callout-header { color: #b45309; }
+  .callout-important, .callout-caution { border-left-color: #ef4444; background: #fef2f2; }
+  .callout-important .callout-header, .callout-caution .callout-header { color: #b91c1c; }
+  .mermaid-wrapper { margin: 1.5em 0; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; text-align: center; }
 `;
 
 /**
@@ -143,12 +158,27 @@ const DARK_PDF_STYLES = `
   ul, ol { padding-left: 1.5em; margin: 0.75em 0; }
   li { margin: 0.25em 0; }
   a { color: #f5f5f5; text-decoration: underline; }
+  .contains-task-list { list-style-type: none; padding-left: 0.5em; }
+  .task-list-item { display: flex; align-items: center; gap: 8px; margin: 0.35em 0; }
+  .task-list-item-checkbox { width: 15px; height: 15px; accent-color: #3b82f6; }
+  .katex-display-block { margin: 1.25em 0; padding: 12px; text-align: center; background: #18181b; border-radius: 8px; border: 1px solid #27272a; }
+  .callout-card { margin: 1.25em 0; padding: 14px 18px; border-radius: 8px; border-left: 4px solid #3b82f6; background: rgba(59, 130, 246, 0.12); }
+  .callout-header { font-weight: 600; font-size: 0.9rem; margin-bottom: 6px; color: #60a5fa; }
+  .callout-tip { border-left-color: #38bdf8; background: rgba(56, 189, 248, 0.12); }
+  .callout-tip .callout-header { color: #38bdf8; }
+  .callout-note { border-left-color: #818cf8; background: rgba(129, 140, 248, 0.12); }
+  .callout-note .callout-header { color: #818cf8; }
+  .callout-warning { border-left-color: #fbbf24; background: rgba(251, 191, 36, 0.12); }
+  .callout-warning .callout-header { color: #fbbf24; }
+  .callout-important, .callout-caution { border-left-color: #f87171; background: rgba(248, 113, 113, 0.12); }
+  .callout-important .callout-header, .callout-caution .callout-header { color: #f87171; }
+  .mermaid-wrapper { margin: 1.5em 0; background: #18181b; border: 1px solid #27272a; border-radius: 8px; padding: 16px; text-align: center; }
 `;
 
-const FONT_LINKS = `<link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin /><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />`;
+const FONT_LINKS = `<link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin /><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />`;
 
 /** Same printable box for every export — required so light/dark PDFs paginate identically. */
-export function getPdfGenerationOptions(_theme = "light") {
+export function getPdfGenerationOptions() {
   // Use zero margins in Puppeteer to ensure background colors fill the page.
   // The actual document margins are handled in CSS via @page { margin: 20mm }.
   return {
